@@ -2,12 +2,15 @@ package jimhome.fretboardtrainer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -115,6 +118,10 @@ public class fbtMain extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fbt_main);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+       // requestWindowFeature(Window.FEATURE_NO_TITLE);//Hide title
+       // this.getWindow().setFlags(WindowManager.LayoutParams.
+       //         FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);//Hide Status bar
         bg = (LinearLayout)findViewById(R.id.bg);
         cbxPlay = (CheckBox)findViewById(R.id.cbxPlay);
         cbxPlay.setOnClickListener(this);
@@ -124,6 +131,7 @@ public class fbtMain extends Activity implements View.OnClickListener {
         cbxRandom.setOnClickListener(this);
         tvNote  = (TextView)findViewById(R.id.tvNote);
         tvNote.setText("?");
+
         timerHandler.postDelayed(timerRunnable, 0);
     }
 
@@ -148,6 +156,11 @@ public class fbtMain extends Activity implements View.OnClickListener {
             short sample = (short)(Math.sin(2 * Math.PI * i / (44100.0 / freqHz)) * 0x7FFF);
             samples[i + 0] = sample;
             samples[i + 1] = sample;
+        }
+        if (track != null) {
+            track.release();
+            track.flush();
+            track = null;
         }
         track = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
                 AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT,

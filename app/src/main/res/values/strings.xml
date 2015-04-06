@@ -3,4 +3,13 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="items">
+        <item>40 bpm</item>
+        <item>50 bpm</item>
+        <item>60 bpm</item>
+        <item>70 bpm</item>
+        <item>80 bpm</item>
+    </string-array>
+
 </resources>

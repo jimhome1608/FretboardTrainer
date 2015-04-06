@@ -47,7 +47,7 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
 
     int NOTE_DURATION = 1000;
 
-    String[] speeds = {"40 bpm", "50 bpm", "60 bpm", "70 bpm", "80 bpm"};
+    String[] speeds = {"20 bpm","30 bpm", "40 bpm", "50 bpm", "60 bpm", "70 bpm", "80 bpm"};
     String[] scales = {"C Major", "C Harmonic (not implemented)", "C Melodic (not implemented)"};
 
     Random random = new Random();
@@ -199,10 +199,10 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner_scales = (Spinner) findViewById(R.id.spinner_scales);
         spinner.setAdapter(adapter);
-        spinner.setSelection(2);//60pb
+        spinner.setSelection(4);//60pb
         spinner.setOnItemSelectedListener(this);
         spinner_scales.setAdapter(adapter_scales);
-        spinner.setSelection(0);//C Major
+        spinner_scales.setSelection(0);//C Major
         noteList = new NoteList();
         timerHandler.postDelayed(timerRunnable, 0);
     }
@@ -212,20 +212,27 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
                                long arg3) {
         int index = arg0.getSelectedItemPosition();
         //String[] speeds = {"40 bpm", "50 bpm", "60 bpm", "70 bpm", "80 bpm"};
+        //http://tomhess.net/Tools/DelayCalculator.aspx
         switch (index){
-            case(0): //40 bpm    1000/(60
+            case(0): //20 bpm    1000/(60
+                NOTE_DURATION = 3000;
+                break;
+            case(1): //30 bpm
+                NOTE_DURATION = 2000;
+                break;
+            case(2): //40 bpm    1000/(60
                 NOTE_DURATION = 1500;
                 break;
-            case(1): //50 bpm
+            case(3): //50 bpm
                 NOTE_DURATION = 1200;
                 break;
-            case(2): //60 bpm
+            case(4): //60 bpm
                 NOTE_DURATION = 1000;
                 break;
-            case(3): //70 bpm
+            case(5): //70 bpm
                 NOTE_DURATION = 857;
                 break;
-            case(4): //80 bpm
+            case(6): //80 bpm
                 NOTE_DURATION = 750;
                 break;
         }

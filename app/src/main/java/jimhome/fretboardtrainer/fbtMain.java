@@ -3,6 +3,7 @@ package jimhome.fretboardtrainer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,30 +26,34 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.os.Handler;
+import android.widget.ToggleButton;
 
 
-public class fbtMain extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class fbtMain extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, ToggleButton.OnCheckedChangeListener {
 
     //http://www.phy.mtu.edu/~suits/notefreqs.html
-    final double C4 = 261.6; // 130.81 should be C3 i am an octave too high all other notes too.
-    final double D4 = 293.66;
-    final double E4FLAT = 311.13;
-    final double E4 = 329.63;
-    final double F4 = 349.23;
-    final double G4 = 392.0;
-    final double A4FLAT = 415.30;
-    final double A4 = 440.00;
-    final double B4 = 493.88;
-    final double C5 = 523.25;
-    final double D5 = 587.33;
-    final double E5FLAT = 622.25;
-    final double E5 = 659.25;
-    final double F5 = 698.46;
-    final double G5 = 783.99;
-    final double A5FLAT = 830.61;
-    final double A5 = 880.00;
-    final double B5 = 987.77;
-    final double C6 = 1046.50;
+
+    final double C3 = 130.81;
+    final double D3 = 146.83;
+    final double E3FLAT = 155.56;
+    final double E3 = 164.81;
+    final double F3 = 174.61;
+    final double G3 = 196.00;
+    final double A3FLAT = 207.65;
+    final double A3 = 220.00;
+    final double B3FLAT =233.08;
+    final double B3 = 246.94;
+    final double C4 = C3*2;
+    final double D4 = D3*2;
+    final double E4FLAT = E3FLAT*2;
+    final double E4 = E3*2;
+    final double F4 = F3*2;
+    final double G4 = G3*2;
+    final double A4FLAT = A3FLAT*2;
+    final double A4 = A3*2;
+    final double B4FLAT = B3FLAT*2;
+    final double B4 = B3*2;
+    final double C5 = C4*2;
 
     int NOTE_DURATION = 1000;
 
@@ -57,14 +63,15 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
     Random random = new Random();
 
     AudioTrack track = null;
+    ToggleButton tbn_c_major;
+    ToggleButton tbnCHarmonic;
+    ToggleButton tbnCMelodic;
     NoteList noteList;
     LinearLayout  bg;
-    CheckBox cbxPlay;
     CheckBox cbxSkip;
     CheckBox cbxRandom;
     TextView tvNote;
     Spinner spinner;
-    Spinner spinner_scales;
     Handler timerHandler = new Handler();
 
     public class Note{
@@ -77,19 +84,24 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
     }
 
     public class NoteList {
-        final int LAST_NOTE = 14;
+        int LAST_NOTE = 27;
         Note note;
         int ItemIndex = 0;
-        boolean going_up = true;
-        boolean going_down = true;
-        char current_direction = 'u';
         public ArrayList<Note> noteList = new ArrayList<Note>();
         public NoteList() {
-            load_c_harmonic();
+            load_c_major();
         }
 
         public void load_c_major() {
             noteList.clear();
+            ItemIndex = 0;
+            note = new Note(C3,"C"); noteList.add(note);
+            note = new Note(D3,"D"); noteList.add(note);
+            note = new Note(E3,"E"); noteList.add(note);
+            note = new Note(F3,"F"); noteList.add(note);
+            note = new Note(G3,"G"); noteList.add(note);
+            note = new Note(A3,"A"); noteList.add(note);
+            note = new Note(B3,"B"); noteList.add(note);
             note = new Note(C4,"C"); noteList.add(note);
             note = new Note(D4,"D"); noteList.add(note);
             note = new Note(E4,"E"); noteList.add(note);
@@ -98,32 +110,87 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
             note = new Note(A4,"A"); noteList.add(note);
             note = new Note(B4,"B"); noteList.add(note);
             note = new Note(C5,"C"); noteList.add(note);
-            note = new Note(D5,"D"); noteList.add(note);
-            note = new Note(E5,"E"); noteList.add(note);
-            note = new Note(F5,"F"); noteList.add(note);
-            note = new Note(G5,"G"); noteList.add(note);
-            note = new Note(A5,"A"); noteList.add(note);
-            note = new Note(B5,"B"); noteList.add(note);
-            note = new Note(C6,"C"); noteList.add(note);
+            note = new Note(B4,"B"); noteList.add(note);
+            note = new Note(A4,"A"); noteList.add(note);
+            note = new Note(G4,"G"); noteList.add(note);
+            note = new Note(F4,"F"); noteList.add(note);
+            note = new Note(E4,"E"); noteList.add(note);
+            note = new Note(D4,"D"); noteList.add(note);
+            note = new Note(C4,"C"); noteList.add(note);
+            note = new Note(B3,"B"); noteList.add(note);
+            note = new Note(A3,"A"); noteList.add(note);
+            note = new Note(G3,"G"); noteList.add(note);
+            note = new Note(F3,"F"); noteList.add(note);
+            note = new Note(E3,"E"); noteList.add(note);
+            note = new Note(D3,"D"); noteList.add(note);
+        }
+
+        public void load_c_melodic() {
+            noteList.clear();
+            ItemIndex = 0;
+            note = new Note(C3,"C"); noteList.add(note);
+            note = new Note(D3,"D"); noteList.add(note);
+            note = new Note(E3FLAT,"E♭"); noteList.add(note);
+            note = new Note(F3,"F"); noteList.add(note);
+            note = new Note(G3,"G"); noteList.add(note);
+            note = new Note(A3,"A"); noteList.add(note);
+            note = new Note(B3,"B"); noteList.add(note);
+            note = new Note(C4,"C"); noteList.add(note);
+            note = new Note(D4,"D"); noteList.add(note);
+            note = new Note(E4FLAT,"E♭"); noteList.add(note);
+            note = new Note(F4,"F"); noteList.add(note);
+            note = new Note(G4,"G"); noteList.add(note);
+            note = new Note(A4,"A"); noteList.add(note);
+            note = new Note(B4,"B"); noteList.add(note);
+            note = new Note(C5,"C"); noteList.add(note);
+            note = new Note(B4FLAT,"B♭"); noteList.add(note);
+            note = new Note(A4FLAT,"A♭"); noteList.add(note);
+            note = new Note(G4,"G"); noteList.add(note);
+            note = new Note(F4,"F"); noteList.add(note);
+            note = new Note(E4FLAT,"E♭"); noteList.add(note);
+            note = new Note(D4,"D"); noteList.add(note);
+            note = new Note(C4,"C"); noteList.add(note);
+            note = new Note(B3FLAT,"B♭"); noteList.add(note);
+            note = new Note(A3FLAT,"A♭"); noteList.add(note);
+            note = new Note(G3,"G"); noteList.add(note);
+            note = new Note(F3,"F"); noteList.add(note);
+            note = new Note(E3FLAT,"E♭"); noteList.add(note);
+            note = new Note(D3,"D"); noteList.add(note);
+            note = new Note(C3,"C"); noteList.add(note);
         }
 
         public void load_c_harmonic() {
             noteList.clear();
+            ItemIndex = 0;
+            note = new Note(C3,"C"); noteList.add(note);
+            note = new Note(D3,"D"); noteList.add(note);
+            note = new Note(E3FLAT,"E♭"); noteList.add(note);
+            note = new Note(F3,"F"); noteList.add(note);
+            note = new Note(G3,"G"); noteList.add(note);
+            note = new Note(A3FLAT,"A♭"); noteList.add(note);
+            note = new Note(B3,"B"); noteList.add(note);
             note = new Note(C4,"C"); noteList.add(note);
             note = new Note(D4,"D"); noteList.add(note);
-            note = new Note(E4FLAT,"E"); noteList.add(note);
+            note = new Note(E4FLAT,"E♭"); noteList.add(note);
             note = new Note(F4,"F"); noteList.add(note);
             note = new Note(G4,"G"); noteList.add(note);
-            note = new Note(A4FLAT,"A"); noteList.add(note);
+            note = new Note(A4FLAT,"A♭"); noteList.add(note);
             note = new Note(B4,"B"); noteList.add(note);
             note = new Note(C5,"C"); noteList.add(note);
-            note = new Note(D5,"D"); noteList.add(note);
-            note = new Note(E5FLAT,"E"); noteList.add(note);
-            note = new Note(F5,"F"); noteList.add(note);
-            note = new Note(G5,"G"); noteList.add(note);
-            note = new Note(A5FLAT,"A"); noteList.add(note);
-            note = new Note(B5,"B"); noteList.add(note);
-            note = new Note(C6,"C"); noteList.add(note);
+            note = new Note(B4,"B"); noteList.add(note);
+            note = new Note(A4FLAT,"A♭"); noteList.add(note);
+            note = new Note(G4,"G"); noteList.add(note);
+            note = new Note(F4,"F"); noteList.add(note);
+            note = new Note(E4FLAT,"E♭"); noteList.add(note);
+            note = new Note(D4,"D"); noteList.add(note);
+            note = new Note(C4,"C"); noteList.add(note);
+            note = new Note(B3,"B"); noteList.add(note);
+            note = new Note(A3FLAT,"A♭"); noteList.add(note);
+            note = new Note(G3,"G"); noteList.add(note);
+            note = new Note(F3,"F"); noteList.add(note);
+            note = new Note(E3FLAT,"E♭"); noteList.add(note);
+            note = new Note(D3,"D"); noteList.add(note);
+            note = new Note(C3,"C"); noteList.add(note);
         }
 
         public Note get_current_note() {
@@ -148,32 +215,10 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
 
         public Note move_next()  {
            Note result = null;
-           if (current_direction == 'u')  {
-               if (ItemIndex < LAST_NOTE) {
-                   ItemIndex++;
-                   result = (Note) noteList.get(ItemIndex);
-                   return result;
-               }
-               else {
-                   current_direction = 'd';
-                   ItemIndex--;
-                   result = (Note) noteList.get(ItemIndex);
-                   return result;
-               }
-           }
-            if (current_direction == 'd')  {
-                if (ItemIndex > 0) {
-                    ItemIndex--;
-                    result = (Note) noteList.get(ItemIndex);
-                    return result;
-                }
-                else {
-                    current_direction = 'u';
-                    ItemIndex++;
-                    result = (Note) noteList.get(ItemIndex);
-                    return result;
-                }
-            }
+            if (ItemIndex < LAST_NOTE)
+                ItemIndex++;
+            else
+                ItemIndex = 0;
            result = (Note) noteList.get(ItemIndex);
            return result;
         }
@@ -183,7 +228,14 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
         @Override
         public void run() {
             Note note;
-            if (cbxPlay.isChecked()) {
+            boolean something_checked = false;
+            if (tbnCHarmonic.isChecked())
+                something_checked = true;
+            if (tbn_c_major.isChecked())
+                something_checked = true;
+            if (tbnCMelodic.isChecked())
+                something_checked = true;
+            if (something_checked) {
                 note  = noteList.get_current_note();
                 if (cbxRandom.isChecked()) {
                     note  = noteList.get_note(random.nextInt(noteList.LAST_NOTE+1));
@@ -194,6 +246,10 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
                             noteList.move_next();
                         }
                     }
+                if (note.name.length() > 1)
+                    tvNote.setTextSize(120);
+                else
+                    tvNote.setTextSize(250);
                 tvNote.setText(note.name);
                 bg.invalidate();
                 generateTone(note.frequency, NOTE_DURATION);
@@ -209,12 +265,22 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
         super.onCreate(savedInstanceState);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         this.getWindow().setFlags(WindowManager.LayoutParams.
-                FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);//Hide Status bar
+                FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//Hide Status bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//Hide title
         setContentView(R.layout.activity_fbt_main);
+        tbn_c_major = (ToggleButton)findViewById(R.id.tbn_c_major);
+        tbn_c_major.setBackgroundColor(Color.TRANSPARENT);
+        tbn_c_major.setChecked(false);
+        tbn_c_major.setOnCheckedChangeListener(this);
+        tbnCHarmonic = (ToggleButton)findViewById(R.id.tbnCHarmonic);
+        tbnCHarmonic.setBackgroundColor(Color.TRANSPARENT);
+        tbnCHarmonic.setChecked(false);
+        tbnCHarmonic.setOnCheckedChangeListener(this);
+        tbnCMelodic = (ToggleButton)findViewById(R.id.tbnCMelodic);
+        tbnCMelodic.setBackgroundColor(Color.TRANSPARENT);
+        tbnCMelodic.setChecked(false);
+        tbnCMelodic.setOnCheckedChangeListener(this);
         bg = (LinearLayout)findViewById(R.id.bg);
-        cbxPlay = (CheckBox)findViewById(R.id.cbxPlay);
-        cbxPlay.setOnClickListener(this);
         cbxSkip = (CheckBox)findViewById(R.id.cbxSkip);
         cbxRandom = (CheckBox)findViewById(R.id.cbxRandom);
         cbxSkip.setOnClickListener(this);
@@ -225,14 +291,37 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, speeds);
         ArrayAdapter<String> adapter_scales = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, scales);
         spinner = (Spinner) findViewById(R.id.spinner);
-        spinner_scales = (Spinner) findViewById(R.id.spinner_scales);
         spinner.setAdapter(adapter);
         spinner.setSelection(4);//60pb
         spinner.setOnItemSelectedListener(this);
-        spinner_scales.setAdapter(adapter_scales);
-        spinner_scales.setSelection(0);//C Major
         noteList = new NoteList();
         timerHandler.postDelayed(timerRunnable, 0);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        // TODO Auto-generated method stub
+        if(isChecked) {
+            buttonView.setBackgroundColor(Color.GREEN);
+            if (buttonView.getId() == tbn_c_major.getId()) {
+                noteList.load_c_major();
+                tbnCHarmonic.setChecked(false);
+                tbnCMelodic.setChecked(false);
+            }
+            if (buttonView.getId() == tbnCHarmonic.getId()) {
+                tbn_c_major.setChecked(false);
+                tbnCMelodic.setChecked(false);
+                noteList.load_c_harmonic();
+            }
+            if (buttonView.getId() == tbnCMelodic.getId()) {
+                tbn_c_major.setChecked(false);
+                tbnCHarmonic.setChecked(false);
+                noteList.load_c_melodic();
+            }
+
+        }
+        else
+            buttonView.setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override

@@ -8,9 +8,10 @@
     android:weightSum="100"
     android:background="#ff3c3c3c">
     <Spinner
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:id="@+id/spinner_scales"
+        android:entries="@array/scales"
         android:layout_weight="1"
         android:textSize="15dp"
         android:background="@android:color/darker_gray"

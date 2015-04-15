@@ -29,18 +29,22 @@ import android.os.Handler;
 public class fbtMain extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     //http://www.phy.mtu.edu/~suits/notefreqs.html
-    final double C4 = 261.6;
+    final double C4 = 261.6; // 130.81 should be C3 i am an octave too high all other notes too.
     final double D4 = 293.66;
+    final double E4FLAT = 311.13;
     final double E4 = 329.63;
     final double F4 = 349.23;
     final double G4 = 392.0;
+    final double A4FLAT = 415.30;
     final double A4 = 440.00;
     final double B4 = 493.88;
     final double C5 = 523.25;
     final double D5 = 587.33;
+    final double E5FLAT = 622.25;
     final double E5 = 659.25;
     final double F5 = 698.46;
     final double G5 = 783.99;
+    final double A5FLAT = 830.61;
     final double A5 = 880.00;
     final double B5 = 987.77;
     final double C6 = 1046.50;
@@ -48,7 +52,7 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
     int NOTE_DURATION = 1000;
 
     String[] speeds = {"20 bpm","30 bpm", "40 bpm", "50 bpm", "60 bpm", "70 bpm", "80 bpm"};
-    String[] scales = {"C Major", "C Harmonic (not implemented)", "C Melodic (not implemented)"};
+    String[] scales = {"C Major", "C Harmonic", "C Melodic (not implemented)"};
 
     Random random = new Random();
 
@@ -81,6 +85,11 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
         char current_direction = 'u';
         public ArrayList<Note> noteList = new ArrayList<Note>();
         public NoteList() {
+            load_c_harmonic();
+        }
+
+        public void load_c_major() {
+            noteList.clear();
             note = new Note(C4,"C"); noteList.add(note);
             note = new Note(D4,"D"); noteList.add(note);
             note = new Note(E4,"E"); noteList.add(note);
@@ -94,6 +103,25 @@ public class fbtMain extends Activity implements View.OnClickListener, AdapterVi
             note = new Note(F5,"F"); noteList.add(note);
             note = new Note(G5,"G"); noteList.add(note);
             note = new Note(A5,"A"); noteList.add(note);
+            note = new Note(B5,"B"); noteList.add(note);
+            note = new Note(C6,"C"); noteList.add(note);
+        }
+
+        public void load_c_harmonic() {
+            noteList.clear();
+            note = new Note(C4,"C"); noteList.add(note);
+            note = new Note(D4,"D"); noteList.add(note);
+            note = new Note(E4FLAT,"E"); noteList.add(note);
+            note = new Note(F4,"F"); noteList.add(note);
+            note = new Note(G4,"G"); noteList.add(note);
+            note = new Note(A4FLAT,"A"); noteList.add(note);
+            note = new Note(B4,"B"); noteList.add(note);
+            note = new Note(C5,"C"); noteList.add(note);
+            note = new Note(D5,"D"); noteList.add(note);
+            note = new Note(E5FLAT,"E"); noteList.add(note);
+            note = new Note(F5,"F"); noteList.add(note);
+            note = new Note(G5,"G"); noteList.add(note);
+            note = new Note(A5FLAT,"A"); noteList.add(note);
             note = new Note(B5,"B"); noteList.add(note);
             note = new Note(C6,"C"); noteList.add(note);
         }
